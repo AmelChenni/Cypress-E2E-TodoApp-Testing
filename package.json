@@ -36,7 +36,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:server": "nodemon ./server/server.js",
-    "test-report": "npx cypress run --record --key a064b345-48ee-4bb2-bf39-c258bd51f17c"
+    "test-report": "npx cypress run --record --key a064b345-48ee-4bb2-bf39-c258bd51f17c",
+    
+    "start:api": "node ./server/server.js", 
+    "start:frontend": "npx serve -s build -l 3000",
+    
+    "ci:test": "start-server-and-test start:api 8080 start:frontend 3000 'cypress run --browser chrome --headless'"
   },
   "eslintConfig": {
     "extends": [
@@ -59,10 +64,7 @@
   "devDependencies": {
     "serve": "^14.2.5"
   },
-
- "engines": {
-  "node": "18.x"
-}
-
-
+  "engines": {
+    "node": "18.x"
+  }
 }
