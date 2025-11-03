@@ -39,6 +39,11 @@ app.use(function (req, res, next) {
 app.use('/api/v1/users', UserRoutes);
 app.use('/api/v1/tasks', authenticateToken, TaskRoutes);
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.listen(port, () => {
   console.log(`Server is up and running on port ${port}`);
 });
