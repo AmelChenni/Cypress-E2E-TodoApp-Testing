@@ -23,19 +23,33 @@ jobs:
         with:
           node-version: 18
 
+      # 3️⃣ تثبيت التبعيات (مرة واحدة فقط)
       - name: Install dependencies
         run: npm ci
+      
+      # 4️⃣ إضافة Caching لملفات Cypress
+      - name: Cache Cypress binary
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-binary-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
+      # 5️⃣ بناء تطبيق React مع خيار التوافق
       - name: Build React App
         run: npm run build
         env:
           NODE_OPTIONS: "--openssl-legacy-provider"
 
+      # 6️⃣ تشغيل السيرفر
       - name: Serve Build
         run: npx serve -s build -l 3000 &
 
+      # 7️⃣ الانتظار حتى يكون السيرفر جاهز
       - name: Wait for server
         run: npx wait-on http://localhost:3000 --timeout 60000
 
+      # 8️⃣ تشغيل اختبارات Cypress بمسح متغيرات NODE_OPTIONS
       - name: Run Cypress tests
         run: npx cypress run
+        env:
+          NODE_OPTIONS: ""
