@@ -10,6 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
