@@ -36,8 +36,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:server": "nodemon ./server/server.js",
-    "test-report" :"npx cypress run --record --key a064b345-48ee-4bb2-bf39-c258bd51f17c"
-
+    "test-report": "npx cypress run --record --key a064b345-48ee-4bb2-bf39-c258bd51f17c"
   },
   "eslintConfig": {
     "extends": [
@@ -56,5 +55,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "serve": "^14.2.5"
   }
 }
