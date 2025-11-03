@@ -1,4 +1,4 @@
-name: Run-Cypress-Tests
+name: Run-Cypress-Tests-Optimized 🚀
 
 on:
   push:
@@ -20,58 +20,48 @@ jobs:
       - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ إعداد Node.js بالإصدار الصحيح
+      # 2️⃣ إعداد Node.js
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
 
-      # 3️⃣ تثبيت التبعيات
-      - name: 📦 Install dependencies
-        run: npm ci
+      # 3️⃣ تثبيت dependencies + الأدوات العالمية
+      - name: 📦 Install dependencies & tools
+        run: |
+          npm ci
+          npm install -g start-server-and-test serve
 
-      # 4️⃣ كاش Cypress
+      # 4️⃣ Cache Cypress
       - name: 🧰 Cache Cypress binary
         uses: actions/cache@v3
         with:
           path: ~/.cache/Cypress
           key: cypress-binary-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
-      # 5️⃣ Build React مع openssl legacy
+      # 5️⃣ Build React App
       - name: 🏗️ Build React App
         run: npm run build
         env:
           NODE_OPTIONS: --openssl-legacy-provider
 
-      # 6️⃣ إنشاء ملف .env للسيرفر
+      # 6️⃣ إنشاء ملف .env
       - name: 🧩 Create .env file for backend
         run: |
           echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> .env
           echo "TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}" >> .env
 
-      # 7️⃣ تثبيت wait-on و serve عالميًا
-      - name: 📦 Install global tools
+      # 7️⃣ تشغيل السيرفرات والاختبارات
+      - name: 🧪 Start Servers and Run Cypress Tests
         run: |
-          npm install -g wait-on serve
+          npx start-server-and-test \
+            'npm run start:api' http://localhost:8080 \
+            'serve -s build -l 3000' http://localhost:3000 \
+            'npx cypress run --browser chrome --headless' \
+            --timeout 120000
 
-      # 8️⃣ تشغيل السيرفر الخلفي
-      - name: 🚀 Start Backend API Server (8080)
-        run: |
-          npm run start:api > api.log 2>&1 &
-          npx wait-on http://localhost:8080 --timeout 60000 || (echo "❌ Backend not reachable" && cat api.log && exit 1)
-
-      # 9️⃣ تشغيل Frontend
-      - name: 🌐 Serve Frontend (3000)
-        run: |
-          serve -s build -l 3000 > frontend.log 2>&1 &
-          npx wait-on http://localhost:3000 --timeout 60000 || (echo "❌ Frontend not reachable" && cat frontend.log && exit 1)
-
-      # 🔟 تشغيل اختبارات Cypress
-      - name: 🧪 Run Cypress Tests
-        run: npx cypress run --browser chrome --headless
-
-      # 1️⃣1️⃣ رفع الفيديوهات
+      # 8️⃣ رفع الفيديوهات
       - name: ⬆️ Upload Cypress Videos
         if: always()
         uses: actions/upload-artifact@v4
@@ -80,7 +70,7 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore
 
-      # 1️⃣2️⃣ رفع لقطات الشاشة
+      # 9️⃣ رفع لقطات الشاشة
       - name: ⬆️ Upload Cypress Screenshots
         if: always()
         uses: actions/upload-artifact@v4
