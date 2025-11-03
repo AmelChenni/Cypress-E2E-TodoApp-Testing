@@ -1,4 +1,4 @@
-name: Run-Cypress-Tests v2
+name: Run-Cypress-Tests
 
 on:
   push:
@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # المتغيرات السرية
       MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
       TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
       NODE_ENV: production
@@ -39,12 +38,13 @@ jobs:
           path: ~/.cache/Cypress
           key: cypress-binary-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
-      # 5️⃣ بناء تطبيق React
+      # 5️⃣ بناء تطبيق React مع openssl legacy
       - name: 🏗️ Build React App
-        run: |
-           export NODE_OPTIONS=--openssl-legacy-provider
-           npm run build
-      # 6️⃣ إنشاء ملف .env للسيرفر (إذا كان يحتاجه)
+        run: npm run build
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+
+      # 6️⃣ إنشاء ملف .env للسيرفر
       - name: 🧩 Create .env file for backend
         run: |
           echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> .env
@@ -54,33 +54,22 @@ jobs:
       - name: 🚀 Start Backend API Server (8080)
         run: |
           npm run start:api > api.log 2>&1 &
-          sleep 10
-          echo "🔎 Checking if API is running..."
-          curl -v http://localhost:8080 || (echo "❌ API not reachable" && cat api.log && exit 1)
+          npx wait-on http://localhost:8080 --timeout 30000
 
-      # 8️⃣ تشغيل الواجهة الأمامية (Frontend)
+      # 8️⃣ تثبيت serve وتشغيل الواجهة الأمامية
+      - name: 📦 Install serve
+        run: npm install -g serve
+
       - name: 🌐 Serve Frontend (3000)
         run: |
-          npx serve -s build -l 3000 > frontend.log 2>&1 &
-          sleep 5
-          echo "🔎 Checking if Frontend is running..."
-          curl -v http://localhost:3000 || (echo "❌ Frontend not reachable" && cat frontend.log && exit 1)
+          serve -s build -l 3000 > frontend.log 2>&1 &
+          npx wait-on http://localhost:3000 --timeout 30000
 
-      # 9️⃣ التأكد من أن كلا السيرفرين جاهزان
-      - name: 🕓 Wait for both servers
-        run: npx wait-on http://localhost:3000 http://localhost:8080 --timeout 90000
-
-      # 🔟 اختبار الاتصال قبل تشغيل Cypress
-      - name: ✅ Check servers before tests
-        run: |
-          curl -I http://localhost:8080
-          curl -I http://localhost:3000
-
-      # 1️⃣1️⃣ تشغيل اختبارات Cypress
+      # 9️⃣ تشغيل اختبارات Cypress
       - name: 🧪 Run Cypress Tests
         run: npx cypress run --browser chrome --headless
 
-      # 1️⃣2️⃣ رفع الفيديوهات الناتجة (إن وُجدت)
+      # 🔟 رفع الفيديوهات الناتجة (إن وُجدت)
       - name: ⬆️ Upload Cypress Videos
         if: always()
         uses: actions/upload-artifact@v4
@@ -89,7 +78,7 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore
 
-      # 1️⃣3️⃣ رفع لقطات الشاشة
+      # 1️⃣1️⃣ رفع لقطات الشاشة
       - name: ⬆️ Upload Cypress Screenshots
         if: always()
         uses: actions/upload-artifact@v4
