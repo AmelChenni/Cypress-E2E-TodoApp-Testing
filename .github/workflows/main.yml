@@ -1,76 +1,82 @@
 name: Run-Cypress-Tests
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+push:
+branches: [ main ]
+pull_request:
+branches: [ main ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+test:
+runs-on: ubuntu-latest
 
+env:
+  # المتغيرات السرية ستكون متاحة للاختبارات والسيرفر
+  MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
+  TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+
+steps:
+  # 1️⃣ نسخ الكود
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  # 2️⃣ إعداد Node.js 
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 16
+      cache: "npm"
+
+  # 3️⃣ تثبيت التبعيات
+  - name: Install dependencies
+    run: npm ci
+
+  # 4️⃣ كاش لـ Cypress
+  - name: Cache Cypress binary
+    uses: actions/cache@v3
+    with:
+      path: ~/.cache/Cypress
+      key: cypress-binary-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+  # 5️⃣ بناء تطبيق React 
+  - name: Build React App
+    run: npm run build
+
+  # 6️⃣ تشغيل السيرفر الخلفي (الـ API) على المنفذ 8080
+  # **هذه هي الخطوة المفقودة التي تم إضافتها!**
+  # **تأكد أن الأمر 'npm run start:api' هو الأمر الصحيح لتشغيل خادمك الخلفي**
+  - name: 🚀 Start Backend API Server (8080)
+    run: npm run start:api &
+
+  # 7️⃣ تشغيل السيرفر الأمامي (الواجهة) على المنفذ 3000
+  - name: 🌐 Serve Frontend Build Folder (3000)
+    run: npx serve -s build -l 3000 &
     env:
-      # المتغيرات السرية ستكون متاحة للاختبارات والسيرفر
-      MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
-      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+      NODE_ENV: production
 
-    steps:
-      # 1️⃣ نسخ الكود
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # 8️⃣ الانتظار حتى يصبح كلا السيرفرين جاهزين
+  - name: Wait for both servers (3000 & 8080)
+    # ننتظر الواجهة الأمامية (3000) والـ API (8080)
+    run: npx wait-on http://localhost:3000 http://localhost:8080 --timeout 90000
 
-      # 2️⃣ إعداد Node.js (الإصدار 16 هو الأكثر استقراراً لتلك الحزمة)
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 16
-          cache: "npm"
+  # 9️⃣ تشغيل اختبارات Cypress
+  - name: Run Cypress tests
+    run: npx cypress run --browser chrome --headless
 
-      # 3️⃣ تثبيت التبعيات
-      - name: Install dependencies
-        run: npm ci
+  # 🔟 حفظ الفيديوهات الناتجة
+  - name: Upload Cypress videos
+    if: always() 
+    uses: actions/upload-artifact@v4
+    with:
+      name: cypress-videos
+      path: cypress/videos
+      if-no-files-found: ignore
 
-      # 4️⃣ كاش لـ Cypress (يوفر الوقت)
-      - name: Cache Cypress binary
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-binary-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      # 5️⃣ بناء تطبيق React (تم إزالة NODE_OPTIONS لأنه غير ضروري في Node 16)
-      - name: Build React App
-        run: npm run build
-
-      # 6️⃣ تشغيل السيرفر المحلي في الخلفية
-      - name: Serve build folder
-        run: npx serve -s build -l 3000 &
-        env:
-          NODE_ENV: production
-
-      # 7️⃣ الانتظار حتى يصبح السيرفر جاهزًا
-      - name: Wait for server
-        run: npx wait-on http://localhost:3000 --timeout 90000
-
-      # 8️⃣ تشغيل اختبارات Cypress
-      - name: Run Cypress tests
-        run: npx cypress run --browser chrome --headless
-        # لا حاجة لـ NODE_OPTIONS: "" هنا لأنه لم يتم تعيينه مسبقًا
-
-      # 9️⃣ حفظ الفيديوهات الناتجة
-      - name: Upload Cypress videos
-        if: always() 
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore
-
-      # 🔟 حفظ لقطات الشاشة
-      - name: Upload Cypress screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-          if-no-files-found: ignore
+  # 1️⃣1️⃣ حفظ لقطات الشاشة
+  - name: Upload Cypress screenshots
+    if: always()
+    uses: actions/upload-artifact@v4
+    with:
+      name: cypress-screenshots
+      path: cypress/screenshots
+      if-no-files-found: ignore
