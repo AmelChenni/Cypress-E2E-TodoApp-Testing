@@ -16,7 +16,7 @@ jobs:
       NODE_ENV: production
 
     steps:
-      # 1️⃣ نسخ الكود من المستودع
+      # 1️⃣ نسخ الكود
       - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
@@ -31,14 +31,14 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      # 4️⃣ كاش لـ Cypress لتسريع البناء
+      # 4️⃣ كاش Cypress
       - name: 🧰 Cache Cypress binary
         uses: actions/cache@v3
         with:
           path: ~/.cache/Cypress
           key: cypress-binary-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
-      # 5️⃣ بناء تطبيق React مع openssl legacy
+      # 5️⃣ Build React مع openssl legacy
       - name: 🏗️ Build React App
         run: npm run build
         env:
@@ -50,26 +50,28 @@ jobs:
           echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> .env
           echo "TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}" >> .env
 
-      # 7️⃣ تشغيل السيرفر الخلفي (API)
+      # 7️⃣ تثبيت wait-on و serve عالميًا
+      - name: 📦 Install global tools
+        run: |
+          npm install -g wait-on serve
+
+      # 8️⃣ تشغيل السيرفر الخلفي
       - name: 🚀 Start Backend API Server (8080)
         run: |
           npm run start:api > api.log 2>&1 &
-          npx wait-on http://localhost:8080 --timeout 30000
+          npx wait-on http://localhost:8080 --timeout 60000 || (echo "❌ Backend not reachable" && cat api.log && exit 1)
 
-      # 8️⃣ تثبيت serve وتشغيل الواجهة الأمامية
-      - name: 📦 Install serve
-        run: npm install -g serve
-
+      # 9️⃣ تشغيل Frontend
       - name: 🌐 Serve Frontend (3000)
         run: |
           serve -s build -l 3000 > frontend.log 2>&1 &
-          npx wait-on http://localhost:3000 --timeout 30000
+          npx wait-on http://localhost:3000 --timeout 60000 || (echo "❌ Frontend not reachable" && cat frontend.log && exit 1)
 
-      # 9️⃣ تشغيل اختبارات Cypress
+      # 🔟 تشغيل اختبارات Cypress
       - name: 🧪 Run Cypress Tests
         run: npx cypress run --browser chrome --headless
 
-      # 🔟 رفع الفيديوهات الناتجة (إن وُجدت)
+      # 1️⃣1️⃣ رفع الفيديوهات
       - name: ⬆️ Upload Cypress Videos
         if: always()
         uses: actions/upload-artifact@v4
@@ -78,7 +80,7 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore
 
-      # 1️⃣1️⃣ رفع لقطات الشاشة
+      # 1️⃣2️⃣ رفع لقطات الشاشة
       - name: ⬆️ Upload Cypress Screenshots
         if: always()
         uses: actions/upload-artifact@v4
