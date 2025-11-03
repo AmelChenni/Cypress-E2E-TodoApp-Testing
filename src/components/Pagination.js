@@ -22,11 +22,9 @@ function Pagination({
     <PaginationContainer>
       {pageNumbers.map((number) => (
         <PaginationBlock key={number}>
-          <a
-            data-test-id="pagination-link"
-            onClick={() => paginate(number)}>
+          <button data-test-id="pagination-link" onClick={() => paginate(number)}>
             {number}
-          </a>
+          </button>
         </PaginationBlock>
       ))}
     </PaginationContainer>
