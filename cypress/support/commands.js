@@ -109,18 +109,12 @@ const access_token = user.access_token;
     cy.log(response.body.messag)
     expect(response.body).have.property('message');
     expect(response.body.message).to.include('length must be at least 3 characters long')
-    // expect(response.body.addedTask).to.not.be.empty;
-
-    // // Assert that the response body has specific properties
-    // expect(response.body.addedTask).to.have.property('isCompleted');
-    // expect(response.body.addedTask).to.have.property('item');
-    // expect(response.body.addedTask.item).to.eq(name);
 
     })
 })
 
 
-Cypress.Commands.add('delete',(name)=>{
+Cypress.Commands.add('delete',()=>{
 const user = JSON.parse(localStorage.getItem('user'));
 const access_token = user.access_token;
     cy.request({
@@ -130,30 +124,48 @@ const access_token = user.access_token;
                   authorization : `Bearer ${access_token}`
         },
       
-    }).then((res)=>{
-        cy.log(res.body.tasks)
+    })
+    .then((res)=>{
         const tasks = res.body.tasks;
 
-        const taskToDelete =tasks.find(task=> task.item === name)
+        if (tasks.length >0) {
+        const taskToDelete =tasks[0]
         cy.log(taskToDelete)
-        
-        if (taskToDelete) { 
-        const taskID = taskToDelete._id;
-        cy.log(taskID)
+        const {createdAt,isCompleted,item,userID,__v,_id} =taskToDelete
 
             cy.request({
-      url: `http://localhost:8080/api/v1/tasks/${taskID}`,
+      url: `http://localhost:8080/api/v1/tasks/${_id}`,
       method: "DELETE",
         headers :{
                   authorization : `Bearer ${access_token}`
         },
       
-    }).then((res)=>{
-        cy.log(res)
-        cy.log(`✅ Task "${name}" deleted successfully`);
-    })    
+    })
+    .then((response)=>{
+      expect(response.status).to.eq(200);
+
+    // Assert that the response body exists and is not empty
+    expect(response.body).to.exist;
+    expect(response.body.deletedTask).to.not.be.empty;
+
+    // Assert that the response body has specific properties
+    expect(response.body.deletedTask).to.have.property('createdAt');
+    expect(response.body.deletedTask).to.have.property('isCompleted');
+    expect(response.body.deletedTask).to.have.property('userID');
+    expect(response.body.deletedTask).to.have.property('__v');
+    expect(response.body.deletedTask).to.have.property('_id');
+    expect(response.body.deletedTask).to.have.property('item');
+
+    expect(response.body.deletedTask.item).to.eq(item);
+    expect(response.body.deletedTask._id).to.eq(_id);
+    expect(response.body.deletedTask.createdAt).to.eq(createdAt);
+    expect(response.body.deletedTask.isCompleted).to.eq(isCompleted);
+    expect(response.body.deletedTask.__v).to.eq(__v);
+    expect(response.body.deletedTask.userID).to.eq(userID);
+
+    })   
 }else {
-      cy.log(`⚠️ Task "${name}" not found`);
+      cy.log(`⚠️ No Tasks available `);
     }
        
 

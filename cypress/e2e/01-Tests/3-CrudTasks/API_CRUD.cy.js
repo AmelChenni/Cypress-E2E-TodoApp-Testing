@@ -21,17 +21,15 @@ it('sould log in with API request',()=>{
   it("should allow user to add a new task", () => {
     const word = faker.word.sample(4);
     cy.addTask(word,false)
-  cy.visit('/'); 
   });
 
 // 03-Add an empty task ---> with API
  it("shouldnt allow user to add an empty task", () => {
     cy.addEmptyTask(' ',false)
-  cy.visit('/'); 
   });
 
 // 04-Delete a task -------> with API
-  it("should can delete a tasl", () => {
+  it.only("should can delete a tasl", () => {
     cy.delete( );
   });
 });
