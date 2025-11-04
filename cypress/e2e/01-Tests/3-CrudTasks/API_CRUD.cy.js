@@ -22,14 +22,12 @@ it('sould log in with API request',()=>{
     const word = faker.word.sample(4);
     cy.addTask(word,false)
   cy.visit('/'); 
-  cy.get('[data-testid="todo-item"]').should("contain.text", word);
   });
 
 // 03-Add an empty task ---> with API
- it("should allow user to add a new task", () => {
+ it("shouldnt allow user to add an empty task", () => {
     cy.addEmptyTask(' ',false)
   cy.visit('/'); 
-  cy.get('[data-testid="todo-item"]').should("contain.text", "test");
   });
 
 // 04-Delete a task -------> with API

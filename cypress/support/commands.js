@@ -22,6 +22,9 @@
 //
 //
 // -- This will overwrite an existing command --
+
+const { faker } = require("@faker-js/faker");
+
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 Cypress.Commands.add('login',(email,password)=>{
         cy.request({
@@ -68,6 +71,18 @@ const access_token = user.access_token;
         item: name,
         isCompleted: status,
       },
+    }).then((response)=>{
+      expect(response.status).to.eq(201);
+
+    // Assert that the response body exists and is not empty
+    expect(response.body).to.exist;
+    expect(response.body.addedTask).to.not.be.empty;
+
+    // Assert that the response body has specific properties
+    expect(response.body.addedTask).to.have.property('isCompleted');
+    expect(response.body.addedTask).to.have.property('item');
+    expect(response.body.addedTask.item).to.eq(name);
+
     })
 })
 
@@ -86,9 +101,22 @@ const access_token = user.access_token;
         isCompleted: status,
       },
         failOnStatusCode: false, // Prevents test failure on 404
-    }).then((response) => {
-  expect(response.status).to.eq(400);
-    });
+    }).then((response)=>{
+      expect(response.status).to.eq(400);
+
+    // Assert that the response body exists and is not empty
+    expect(response.body).to.exist;
+    cy.log(response.body.messag)
+    expect(response.body).have.property('message');
+    expect(response.body.message).to.include('length must be at least 3 characters long')
+    // expect(response.body.addedTask).to.not.be.empty;
+
+    // // Assert that the response body has specific properties
+    // expect(response.body.addedTask).to.have.property('isCompleted');
+    // expect(response.body.addedTask).to.have.property('item');
+    // expect(response.body.addedTask.item).to.eq(name);
+
+    })
 })
 
 
