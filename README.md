@@ -64,18 +64,22 @@ The UI is not developed by me, but **all automation scripts are written by me**.
 
 ### 1. Install Dependencies
 ```bash
-npm install
-
+npm install```
 ### 2. Open Cypress GUI (Interactive Mode)
+```bash
+npm install
+npm run cypress:open 
+# Or: npx cypress open```
 
 - Use this mode to run and debug tests interactively.
 - Choose the spec file you want to execute.
-
 ### 3. Run Cypress Headless (CI / Command Line Mode)
 
+``` npm run cypress:run 
+# Or: npx cypress run ```
 - Executes all tests in headless mode.
 - Generates test reports automatically.
-
+```
 ### 4. Mochawesome Test Reports
 - After running tests, open the HTML report at: cypress/reports/mochawesome.html
 - The report contains:
@@ -91,15 +95,14 @@ npm install
 
 ## Test Coverage
 
-| Feature | Test Type | Status |
-|---------|-----------|--------|
-| Signup | UI / API | ✅ Passed |
-| Login | UI / API | ✅ Passed |
-| Add Task | UI / API | ✅ Passed |
-| Add Empty Task | UI / API | ✅ Passed |
-| Delete Task | UI / API | ✅ Passed |
-| Display All Tasks | UI | ✅ Passed |
-| Form Validations | UI / API | ✅ Passed |
+| Feature | Test Type | Status |Key Command Used |
+|---------|-----------|--------|-----------------|
+| Signup | UI / API | ✅ Passed |cy.fillBasicInfo|
+| Login | UI / API | ✅ Passed |cy.login (API Request for token)|
+| Add Task | UI / API | ✅ Passed |cy.addTask (API Request/UI interaction)|
+| Add Empty Task | UI / API | ✅ Passed |cy.addEmptyTask (API Request/UI interaction)|
+| Delete Task | UI / API | ✅ Passed |cy.delete (API Request/UI interaction)|
+| Form Validations | UI / API | ✅ Passed |Data-Driven approach|
 
 ---
 
@@ -125,6 +128,11 @@ npm install
 ---
 
 ## Course Certificate
+This project is the culmination of dedicated study and reflects:
+
+Rapid Learning: Ability to master and implement advanced automation concepts in a very short timeframe.
+
+Best Practices: Focus on maintainability, reusability, and performance through POM and API session management.
 
 Completed Cypress Automation Bootcamp  
 []
