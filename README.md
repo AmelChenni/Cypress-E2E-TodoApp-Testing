@@ -1,8 +1,15 @@
+
 # ✅ Todo App — Cypress E2E Automation Project
 
-![Cypress](https://img.shields.io/badge/Cypress-15.5.0-brightgreen)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Workflow-blue)
-![Node.js](https://img.shields.io/badge/Node-20.5.1-blue)
+<!-- Badges -->
+![Cypress](https://img.shields.io/badge/Cypress-15.5.0-brightgreen?style=for-the-badge&logo=cypress)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Workflow-blue?style=for-the-badge&logo=githubactions)
+![Node.js](https://img.shields.io/badge/Node.js-20.5.1-green?style=for-the-badge&logo=node.js)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow?style=for-the-badge&logo=javascript)
+
+[📊 View Full Mochawesome Report](cypress/reports/mochawesome.html)
+
+
 
 This project is a complete **End-to-End (E2E) Automation Testing** framework for a Todo web application using **Cypress**.  
 The UI is not developed by me, but **all automation scripts are written by me**.
@@ -64,7 +71,8 @@ The UI is not developed by me, but **all automation scripts are written by me**.
 
 ### 1. Install Dependencies
 ```bash
-npm install```
+npm install
+```
 ### 2. Open Cypress GUI (Interactive Mode)
 ```bash
 npm install
@@ -73,6 +81,7 @@ npm run cypress:open
 
 - Use this mode to run and debug tests interactively.
 - Choose the spec file you want to execute.
+```
 ### 3. Run Cypress Headless (CI / Command Line Mode)
 
 ``` npm run cypress:run 
@@ -119,23 +128,55 @@ npm run cypress:open
 
 ---
 
-## Screenshots & Reports
 
-- Screenshots from Cypress runs in cypress/screenshots/
-- Mochawesome HTML reports in cypress/reports/mochawesome.html
-- Execution videos optional but recommended
+# 📊 Screenshots & Test Reports
+
+## 1️⃣ Register Feature
+
+### GitHub Actions Result
+![GitHub Action Result - Register](01-GithubActionResult.png)
+
+### Mochawesome Report
+![Mochawesome Report - Register](01-MochawsomeReport-Register.png)
 
 ---
 
-## Course Certificate
+## 2️⃣ Login Feature
+
+### GitHub Actions Result
+![GitHub Action Result - Login](02-GithubActionResult.png)
+
+### Mochawesome Report
+![Mochawesome Report - Login](02-MochawsomeReport-Login.png)
+
+---
+
+## 3️⃣ CRUD Feature
+
+### Mochawesome Report
+![Mochawesome Report - CRUD](03-MochawsomeReport-Crud.png)
+
+---
+
+## 4️⃣ Code Preview
+![Code Preview](code.png)
+
+
+---
+
+## 🎓 Course Certificate
+
 This project is the culmination of dedicated study and reflects:
 
-Rapid Learning: Ability to master and implement advanced automation concepts in a very short timeframe.
+- **Rapid Learning:** Ability to master and implement advanced automation concepts in a very short timeframe.
+- **Best Practices:** Focus on maintainability, reusability, and performance through POM (Page Object Model) and API session management.
+- **Completed Cypress Automation Bootcamp**
 
-Best Practices: Focus on maintainability, reusability, and performance through POM and API session management.
+### Certificate & Tools
 
-Completed Cypress Automation Bootcamp  
-[]
+#### Certificate
+![Course Certificate](CypressCertificate.png)
+
 
 ---
 
@@ -150,9 +191,8 @@ This project demonstrates:
 
 ## Links
 
-- GitHub Repository: []  
-- Demo Video / GIF ()  
-- LinkedIn Portfolio: []  
+[GitHub Repository](https://github.com/AmelChenni/Cypress-E2E-TodoApp-Testing)
+[LinkedIn Portfolio]([https://www.linkedin.com/in/amel-chenni/)  
 
 ---
 
