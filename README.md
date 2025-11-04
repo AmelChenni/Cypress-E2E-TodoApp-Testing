@@ -192,7 +192,7 @@ This project demonstrates:
 ## Links
 
 [GitHub Repository](https://github.com/AmelChenni/Cypress-E2E-TodoApp-Testing)
-[LinkedIn Portfolio]([https://www.linkedin.com/in/amel-chenni/)  
+[LinkedIn Portfolio](https://www.linkedin.com/in/amel-chenni/)
 
 ---
 
