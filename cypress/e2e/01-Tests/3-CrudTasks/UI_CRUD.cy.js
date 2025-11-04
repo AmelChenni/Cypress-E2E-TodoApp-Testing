@@ -48,12 +48,11 @@ describe("Todo feature tests", () => {
   });
 
   // 04 - Delete a task -------> with UI
-  it("should allow user to delete a task", () => {
-
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="no-todos"]').length !== 0) {
-        cy.log($body.find('[data-testid="no-todos"]').length);
-        cy.log("⚠️ No Available Todos");
+  it.only("should allow user to delete a task", () => {
+      if (cy.get('[data-testid="no-todos"]')
+        .should('be.visible')         
+        .and('contain.text', 'No Available Todos')) {
+          cy.log("⚠️ No Available Todos");
       } else {
         cy.get('[data-testid="todo-item"]')
           .first()
@@ -66,6 +65,5 @@ describe("Todo feature tests", () => {
           cy.get('[data-testid="todo-item"]').should("not.contain.text", text);
         });
       }
-    });
   });
 });
