@@ -4,76 +4,151 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Workflow-blue)
 ![Node.js](https://img.shields.io/badge/Node-20.5.1-blue)
 
-
 This project is a complete **End-to-End (E2E) Automation Testing** framework for a Todo web application using **Cypress**.  
 The UI is not developed by me, but **all automation scripts are written by me**.
 
 ---
 
 ## 🎯 Project Objectives
-- Test CRUD operations for Todo tasks (UI + API)
-- Implement **Page Object Model (POM)** for maintainable code
-- Reusable Cypress commands for login, add/delete task
-- Cover both positive and negative scenarios
-- Generate automated reports (Mochawesome)
+
+- Test CRUD operations for Todo tasks, leveraging both **UI and API** layers.
+- Implement **Page Object Model (POM)** for structured and maintainable code.
+- Utilize **API-based Login** for session management and faster test execution.
+- Cover both positive and negative scenarios using **Data-Driven Testing**.
+- Generate automated reports with **Mochawesome** for detailed test results.
 
 ---
 
 ## 🧰 Tech Stack
+
 | Tool | Purpose |
-|------|---------|
-| Cypress | UI + API Testing |
-| JavaScript | Test scripting |
-| Page Object Model (POM) | Code organization |
-| Custom Cypress Commands | Reusable functions |
-| Faker.js | Randomized test data |
-| GitHub Actions | CI integration |
-| Mochawesome | Test reports |
+| :--- | :--- |
+| **Cypress** | Primary UI & API Testing Framework |
+| **JavaScript** | Test scripting |
+| **Custom Commands** | Reusable functions for common tasks (`cy.login`, `cy.addTask`) |
+| **Faker.js** | Randomized and dynamic test data generation |
+| **GitHub Actions** | Continuous Integration (CI) for automated runs |
+| **Mochawesome** | Generating comprehensive HTML test reports |
 
 ---
 
 ## 📂 Project Structure
 
-* **`cypress/`**
-  * `e2e/`
-      *`01-Tests/`
-          *`01-Signup/`
-            `Register.cy.js
-        *`02-Login/`
-            Login.cy.js
-        *`03/CrudTasks/`
-            API_CRUD.cy.js
-            UI_CRUD.cy.js
-
-    *`02-Pages/`
-      *`01-SignupPage.js`
-      *`02-LoginPage.js`
-      *`03-AddTasksPage.js`
-  
-    *`03-testData/`
-      *`01-SignupData.js`
-      *`02-LoginData.js`
-      *`03-AddTasksData.js`
-      
-  fixtures/
-  screenshots/
-  support/
-    commands.js
-    e2e.js
-
-docs/
-  TestPlan.pdf
-  TestCases.xlsx
-  BugReport.pdf
-  ExecutionReport.pdf
-
-- **pages/** — Page Object Model  
-- **commands.js** — reusable commands like `login`, `createTask`, `deleteTask`
+* **cypress/**
+    * **e2e/** (Test Specs)
+        * 01-Tests/
+            * 01-Signup/Register.cy.js (UI Data-Driven Signup tests)
+            * 02-Login/Login.cy.js (UI Data-Driven Login tests)
+            * 03-CrudTasks/API_CRUD.cy.js (Pure API tests)
+            * 03-CrudTasks/UI_CRUD.cy.js (UI tests)
+    * **02-Pages/** (Page Object Model - POM)
+        * 01-SignupPage.js
+        * 02-LoginPage.js
+        * 03-AddTasksPage.js
+    * **03-testData/** (Test Data)
+        * 01-SignupData.js
+        * 02-LoginData.js
+        * 03-AddTasksData.js
+    * fixtures/
+    * support/
+        * commands.js (Reusable API and UI commands)
+* **docs/** (Manual QA Artifacts)
+    * TestPlan.pdf
+    * TestCases.xlsx
+    * BugReport.pdf
+    * ExecutionReport.pdf
 
 ---
 
 ## 🔧 Running the Project
 
-### Install Dependencies
+### 1. Install Dependencies
 ```bash
 npm install
+
+### 2. Open Cypress GUI (Interactive Mode)
+
+- Use this mode to run and debug tests interactively.
+- Choose the spec file you want to execute.
+
+### 3. Run Cypress Headless (CI / Command Line Mode)
+
+- Executes all tests in headless mode.
+- Generates test reports automatically.
+
+### 4. Mochawesome Test Reports
+- After running tests, open the HTML report at: cypress/reports/mochawesome.html
+- The report contains:
+    - Passed / Failed tests
+    - Screenshots for failed tests
+    - Execution statistics and charts
+
+### 5. Notes
+- Make sure your local server is running at http://localhost:3000 before executing tests.
+- Use environment variables for sensitive data (email/password) via cypress.config.js or .env file.
+
+---
+
+## Test Coverage
+
+| Feature | Test Type | Status |
+|---------|-----------|--------|
+| Signup | UI / API | ✅ Passed |
+| Login | UI / API | ✅ Passed |
+| Add Task | UI / API | ✅ Passed |
+| Add Empty Task | UI / API | ✅ Passed |
+| Delete Task | UI / API | ✅ Passed |
+| Display All Tasks | UI | ✅ Passed |
+| Form Validations | UI / API | ✅ Passed |
+
+---
+
+## API & Database Testing
+
+- API endpoints tested:
+    - POST /api/v1/users/login ✅
+    - POST /api/v1/tasks ✅
+    - GET /api/v1/tasks ✅
+    - DELETE /api/v1/tasks/:id ✅
+- Used authorization headers for secure API calls
+- Verified response payloads and status codes
+- Validated task creation, deletion, and error scenarios
+
+---
+
+## Screenshots & Reports
+
+- Screenshots from Cypress runs in cypress/screenshots/
+- Mochawesome HTML reports in cypress/reports/mochawesome.html
+- Execution videos optional but recommended
+
+---
+
+## Course Certificate
+
+Completed Cypress Automation Bootcamp  
+[]
+
+---
+
+## About the Project
+
+This project demonstrates:  
+- Practical experience in UI & API Automation  
+- Using Cypress best practices  
+- Writing maintainable, reusable, and data-driven tests
+
+---
+
+## Links
+
+- GitHub Repository: []  
+- Demo Video / GIF ()  
+- LinkedIn Portfolio: []  
+
+---
+
+## Contact
+
+- Email: chenniamel45@gmail.com
+
